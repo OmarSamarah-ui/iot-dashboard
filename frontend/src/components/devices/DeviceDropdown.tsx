@@ -1,12 +1,28 @@
-import Select from 'react-select';
+import Select, { StylesConfig, SingleValue } from 'react-select';
 
-const DeviceDropdown = ({ devices, selectedDeviceId, setSelectedDeviceId }) => {
-    const options = devices.map((device) => ({
+type Device = {
+    id: number;
+    name: string;
+};
+
+type DeviceOption = {
+    value: number;
+    label: string;
+};
+
+type DeviceDropdownProps = {
+    devices: Device[];
+    selectedDeviceId: number | null;
+    setSelectedDeviceId: (id: number | null) => void;
+};
+
+const DeviceDropdown = ({ devices, selectedDeviceId, setSelectedDeviceId }: DeviceDropdownProps) => {
+    const options: DeviceOption[] = devices.map((device) => ({
         value: device.id,
         label: device.name,
     }));
 
-    const customStyles = {
+    const customStyles: StylesConfig<DeviceOption, false> = {
         control: (provided, state) => ({
             ...provided,
             backgroundColor: '#f3f4f6',
@@ -33,7 +49,15 @@ const DeviceDropdown = ({ devices, selectedDeviceId, setSelectedDeviceId }) => {
         }),
     };
 
-    return <Select options={options} value={options.find((option) => option.value === selectedDeviceId)} onChange={(selectedOption) => setSelectedDeviceId(selectedOption?.value)} placeholder='Select a Device...' styles={customStyles} />;
+    return (
+        <Select
+            options={options}
+            value={options.find((option) => option.value === selectedDeviceId)}
+            onChange={(selectedOption: SingleValue<DeviceOption>) => setSelectedDeviceId(selectedOption?.value ?? null)}
+            placeholder='Select a Device...'
+            styles={customStyles}
+        />
+    );
 };
 
 export default DeviceDropdown;

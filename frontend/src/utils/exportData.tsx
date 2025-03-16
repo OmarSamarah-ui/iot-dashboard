@@ -1,7 +1,7 @@
 import { utils, writeFile } from 'xlsx';
 
 const exportData = (overviewData, chartData = [], tableData = [], format) => {
-    const formattedOverviewData = [overviewData]; // ✅ Convert to an array
+    const formattedOverviewData = [overviewData];
     const formattedChartData = chartData.length ? chartData : [{ message: 'No chart data available' }];
     const formattedTableData = tableData.length ? tableData : [{ message: 'No table data available' }];
 

@@ -16,15 +16,13 @@ const MostFrequentAlerts = () => {
 
     Chart.register(...registerables);
 
-    // Detect dark mode
     useEffect(() => {
         const checkDarkMode = () => {
             setIsDarkMode(document.documentElement.classList.contains('dark'));
         };
 
-        checkDarkMode(); // Run on mount
+        checkDarkMode();
 
-        // Listen for class changes on <html>
         const observer = new MutationObserver(checkDarkMode);
         observer.observe(document.documentElement, { attributes: true });
 
@@ -52,26 +50,25 @@ const MostFrequentAlerts = () => {
             .catch((error) => console.error('Error fetching chart data:', error));
     }, []);
 
-    // Chart options that change only text labels & ticks
     const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: {
                 labels: {
-                    color: isDarkMode ? 'white' : 'black', // ✅ Fixes legend text color
+                    color: isDarkMode ? 'white' : 'black',
                 },
             },
         },
         scales: {
             x: {
                 ticks: {
-                    color: isDarkMode ? 'white' : 'black', // ✅ Fixes x-axis text color
+                    color: isDarkMode ? 'white' : 'black',
                 },
             },
             y: {
                 ticks: {
-                    color: isDarkMode ? 'white' : 'black', // ✅ Fixes y-axis text color
+                    color: isDarkMode ? 'white' : 'black',
                 },
             },
         },

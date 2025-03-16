@@ -3,6 +3,9 @@ import { sql, poolPromise } from '../db';
 
 const router = Router();
 
+/**
+ * Ensures that the database connection is available before querying.
+ */
 const getDatabaseConnection = async () => {
     const pool = await poolPromise;
     if (!pool) {
@@ -122,10 +125,6 @@ router.get('/:id/data', async (req: Request, res: Response): Promise<void> => {
  * @route DELETE /devices/:id
  * @desc Delete a device by ID
  */
-/**
- * @route DELETE /devices/:id
- * @desc Delete a device by ID
- */
 router.delete('/:id', async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
 
@@ -135,10 +134,8 @@ router.delete('/:id', async (req: Request, res: Response): Promise<void> => {
             throw new Error('Database connection is not available');
         }
 
-        // 🛠 Step 1: Delete related alerts first
         await pool.request().input('id', sql.Int, id).query('DELETE FROM alerts WHERE device_id = @id');
 
-        // 🛠 Step 2: Now delete the device
         const result = await pool.request().input('id', sql.Int, id).query('DELETE FROM devices WHERE id = @id');
 
         if (result.rowsAffected[0] === 0) {

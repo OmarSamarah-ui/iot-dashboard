@@ -14,7 +14,7 @@ const config: sql.config = {
     },
 };
 
-// Create a single connection pool and reuse it
+// Single connection pool
 const poolPromise = new sql.ConnectionPool(config)
     .connect()
     .then((pool) => {
@@ -23,7 +23,7 @@ const poolPromise = new sql.ConnectionPool(config)
     })
     .catch((err) => {
         console.error('❌ Database connection failed:', err);
-        return null; // Prevent returning 'void'
+        return null;
     });
 
 export { sql, poolPromise };

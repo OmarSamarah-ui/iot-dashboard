@@ -1,6 +1,6 @@
 import request from 'supertest';
-import app from '../../src/app';
-import { poolPromise, sql } from '../../src/db';
+import app from '../../app';
+import { poolPromise, sql } from '../../db';
 
 describe('API Endpoints', () => {
     let testDeviceId: number;
@@ -9,7 +9,7 @@ describe('API Endpoints', () => {
         const pool = await poolPromise;
         if (!pool) throw new Error('Database connection failed');
 
-        // ✅ Insert a test device
+        // Insert a test device
         const result = await pool
             .request()
             .input('name', sql.NVarChar, 'API Test Sensor')
@@ -21,7 +21,7 @@ describe('API Endpoints', () => {
         testDeviceId = result.recordset[0].id;
     });
 
-    // ✅ Test adding time-series data
+    // Test adding time-series data
     it('should add time-series data via POST /devices/:id/data', async () => {
         const res = await request(app).post(`/devices/${testDeviceId}/data`).send({
             timestamp: new Date().toISOString(),
@@ -30,14 +30,14 @@ describe('API Endpoints', () => {
         expect(res.statusCode).toBe(201);
     });
 
-    // ✅ Test fetching time-series data
+    // Test fetching time-series data
     it('should fetch time-series data via GET /devices/:id/data', async () => {
         const res = await request(app).get(`/devices/${testDeviceId}/data`);
         expect(res.statusCode).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
     });
 
-    // ✅ Test deleting a device
+    // Test deleting a device
     it('should delete a device via DELETE /devices/:id', async () => {
         const res = await request(app).delete(`/devices/${testDeviceId}`);
         expect(res.statusCode).toBe(200);

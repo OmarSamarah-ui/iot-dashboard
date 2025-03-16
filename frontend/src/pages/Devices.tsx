@@ -5,14 +5,6 @@ import DeviceCard from '../components/devices/DeviceCard';
 import RegisterNewDevice from '../components/modals/RegisterNewDevice';
 import DeleteDevice from '../components/modals/DeleteDevice';
 
-interface Device {
-    id: number;
-    name: string;
-    type: string;
-    location: string;
-    status: 'Active' | 'Inactive';
-}
-
 const Devices = () => {
     const [devices, setDevices] = useState<Device[]>([]);
     const [showInactive, setShowInactive] = useState(false);
@@ -20,7 +12,15 @@ const Devices = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [deviceToDelete, setDeviceToDelete] = useState<number | null>(null);
 
-    const handleRegisterDevice = async (newDevice) => {
+    interface Device {
+        id: number;
+        name: string;
+        type: string;
+        location: string;
+        status: 'Active' | 'Inactive';
+    }
+
+    const handleRegisterDevice = async (newDevice: Device) => {
         try {
             const response = await fetch('http://localhost:5000/devices', {
                 method: 'POST',
@@ -29,7 +29,7 @@ const Devices = () => {
             });
 
             if (response.ok) {
-                fetchDevices(); // Refresh the devices list after adding
+                fetchDevices();
             } else {
                 console.error('Failed to add device');
             }
@@ -61,7 +61,7 @@ const Devices = () => {
         try {
             const response = await fetch('http://localhost:5000/devices');
             const data = await response.json();
-            setDevices(data); // Update the state with the new data
+            setDevices(data);
         } catch (error) {
             console.error('Error fetching devices:', error);
         }
@@ -98,8 +98,8 @@ const Devices = () => {
                             <DeviceCard
                                 device={device}
                                 onDelete={() => {
-                                    setDeviceToDelete(device.id); // Set the device ID
-                                    setIsDeleteModalOpen(true); // Open the modal
+                                    setDeviceToDelete(device.id);
+                                    setIsDeleteModalOpen(true);
                                 }}
                             />
                         ))}
@@ -121,14 +121,13 @@ const Devices = () => {
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3, ease: 'easeInOut' }}>
                         {devices
-                            .filter((device) => device.status === 'Inactive') // Only Inactive devices
+                            .filter((device) => device.status === 'Inactive')
                             .map((device) => (
                                 <DeviceCard
                                     device={device}
-                                    onDelete={handleDeleteDevice}
                                     onDelete={() => {
-                                        setDeviceToDelete(device.id); // Set the device ID
-                                        setIsDeleteModalOpen(true); // Open the modal
+                                        setDeviceToDelete(device.id);
+                                        setIsDeleteModalOpen(true);
                                     }}
                                 />
                             ))}

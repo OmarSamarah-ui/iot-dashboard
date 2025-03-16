@@ -8,7 +8,7 @@ import { DiHtml5DeviceAccess } from 'react-icons/di';
 import { motion } from 'framer-motion';
 
 const Navbar = () => {
-    const { theme, setTheme } = useTheme();
+    const { theme, setTheme } = useTheme() as { theme: string; setTheme: (theme: string) => void };
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const toggleTheme = () => {

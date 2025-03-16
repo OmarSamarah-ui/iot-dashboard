@@ -14,13 +14,13 @@ const AddTimestamp: React.FC<AddTimestampProps> = ({ isOpen, onClose, onAdd }) =
 
     if (!isOpen) return null;
 
-    const isDarkMode = document.documentElement.classList.contains('dark'); // ✅ Detect Dark Mode
+    const isDarkMode = document.documentElement.classList.contains('dark');
 
     const handleSubmit = () => {
         if (!selectedDate || value === '') return;
 
         const formattedTimestamp = selectedDate.toISOString();
-        console.log('Submitting Timestamp:', formattedTimestamp, 'Value:', value); // Debugging line
+        console.log('Submitting Timestamp:', formattedTimestamp, 'Value:', value);
         onAdd(formattedTimestamp, parseFloat(value));
         onClose();
     };
@@ -30,8 +30,8 @@ const AddTimestamp: React.FC<AddTimestampProps> = ({ isOpen, onClose, onAdd }) =
             <div
                 className='p-6 rounded-lg shadow-lg w-96'
                 style={{
-                    backgroundColor: isDarkMode ? '#1e293b' : '#ffffff', // ✅ Adjust modal background
-                    color: isDarkMode ? '#f1f5f9' : '#1e293b', // ✅ Adjust text color
+                    backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
+                    color: isDarkMode ? '#f1f5f9' : '#1e293b',
                 }}>
                 <h2 className='text-lg font-semibold mb-4'>Add New Timestamp</h2>
 
@@ -44,9 +44,9 @@ const AddTimestamp: React.FC<AddTimestampProps> = ({ isOpen, onClose, onAdd }) =
                     dateFormat='yyyy-MM-dd HH:mm:ss'
                     className='border p-2 rounded-md shadow-sm w-full'
                     style={{
-                        backgroundColor: isDarkMode ? '#374151' : '#f3f4f6', // ✅ Adjust input background
-                        color: isDarkMode ? '#f1f5f9' : '#1e293b', // ✅ Adjust text color
-                        borderColor: isDarkMode ? '#4b5563' : '#d1d5db', // ✅ Adjust border
+                        backgroundColor: isDarkMode ? '#374151' : '#f3f4f6',
+                        color: isDarkMode ? '#f1f5f9' : '#1e293b',
+                        borderColor: isDarkMode ? '#4b5563' : '#d1d5db',
                     }}
                 />
 
@@ -59,9 +59,9 @@ const AddTimestamp: React.FC<AddTimestampProps> = ({ isOpen, onClose, onAdd }) =
                     className='border p-2 rounded-md shadow-sm w-full'
                     placeholder='Enter value'
                     style={{
-                        backgroundColor: isDarkMode ? '#374151' : '#f3f4f6', // ✅ Adjust input background
-                        color: isDarkMode ? '#f1f5f9' : '#1e293b', // ✅ Adjust text color
-                        borderColor: isDarkMode ? '#4b5563' : '#d1d5db', // ✅ Adjust border
+                        backgroundColor: isDarkMode ? '#374151' : '#f3f4f6',
+                        color: isDarkMode ? '#f1f5f9' : '#1e293b',
+                        borderColor: isDarkMode ? '#4b5563' : '#d1d5db',
                     }}
                 />
 
@@ -70,7 +70,7 @@ const AddTimestamp: React.FC<AddTimestampProps> = ({ isOpen, onClose, onAdd }) =
                     <button
                         className='px-4 py-2 rounded-full transition-colors ease-in'
                         style={{
-                            backgroundColor: isDarkMode ? '#6b7280' : '#d1d5db', // ✅ Adjust button color
+                            backgroundColor: isDarkMode ? '#6b7280' : '#d1d5db',
                             color: '#ffffff',
                         }}
                         onClick={onClose}>
@@ -79,7 +79,7 @@ const AddTimestamp: React.FC<AddTimestampProps> = ({ isOpen, onClose, onAdd }) =
                     <button
                         className='px-4 py-2 rounded-full transition-colors ease-in'
                         style={{
-                            backgroundColor: isDarkMode ? '#2563eb' : '#3b82f6', // ✅ Adjust button color
+                            backgroundColor: isDarkMode ? '#2563eb' : '#3b82f6',
                             color: '#ffffff',
                         }}
                         onClick={handleSubmit}>

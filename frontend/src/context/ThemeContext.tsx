@@ -4,7 +4,7 @@ const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
-    const [_, forceRender] = useState(0); // ✅ Dummy state to force re-render
+    const [_, forceRender] = useState(0);
 
     useEffect(() => {
         if (theme === 'dark') {
@@ -13,7 +13,7 @@ export const ThemeProvider = ({ children }) => {
             document.documentElement.classList.remove('dark');
         }
         localStorage.setItem('theme', theme);
-        forceRender((prev) => prev + 1); // ✅ Force global re-render
+        forceRender((prev) => prev + 1);
     }, [theme]);
 
     return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;

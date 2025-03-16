@@ -8,7 +8,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // Ensure JSON body parsing
+app.use(express.json());
 
 // Register API Routes
 app.use('/devices', deviceRoutes);
@@ -18,4 +18,4 @@ app.get('/', (req, res) => {
     res.send('IoT Dashboard API is running...');
 });
 
-export default app; // ✅ Export Express app (no listen here)
+export default app;

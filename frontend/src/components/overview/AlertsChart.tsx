@@ -5,15 +5,13 @@ const AlertsChart = () => {
     const [chartData, setChartData] = useState<any>(null);
     const [isDarkMode, setIsDarkMode] = useState(false);
 
-    // Detect dark mode
     useEffect(() => {
         const checkDarkMode = () => {
             setIsDarkMode(document.documentElement.classList.contains('dark'));
         };
 
-        checkDarkMode(); // Run on mount
+        checkDarkMode();
 
-        // Listen for class changes on <html>
         const observer = new MutationObserver(checkDarkMode);
         observer.observe(document.documentElement, { attributes: true });
 
@@ -28,7 +26,6 @@ const AlertsChart = () => {
                     const alertTypes = Object.keys(data);
                     const alertCounts = Object.values(data);
 
-                    // Define color palettes for light and dark themes
                     const lightThemeColors = ['#A4C3B2', '#779CAB', '#E4C1F9', '#F6BD60', '#A9DEF9', '#B7E4C7', '#D8A7B1', '#F2E9E4', '#C8B6A6', '#9CAFAA'];
 
                     const darkThemeColors = ['#3E6259', '#556E7F', '#7D5BA6', '#B7791F', '#2563EB', '#3B82F6', '#9D174D', '#4B5563', '#6B7280', '#374151'];
@@ -39,7 +36,7 @@ const AlertsChart = () => {
                             {
                                 label: 'Alert Types',
                                 data: alertCounts,
-                                backgroundColor: isDarkMode ? darkThemeColors : lightThemeColors, // Change colors dynamically
+                                backgroundColor: isDarkMode ? darkThemeColors : lightThemeColors,
                             },
                         ],
                     });
@@ -48,27 +45,26 @@ const AlertsChart = () => {
                 }
             })
             .catch((error) => console.error('❌ Error fetching alerts data:', error));
-    }, [isDarkMode]); // Re-fetch data when dark mode changes
+    }, [isDarkMode]);
 
-    // Chart options that change with dark mode
     const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: {
                 labels: {
-                    color: isDarkMode ? 'white' : 'black', // Change legend text color
+                    color: isDarkMode ? 'white' : 'black',
                 },
             },
         },
         layout: {
             padding: 10,
         },
-        backgroundColor: isDarkMode ? 'transparent' : 'white', // ✅ Fixes the chart background
+        backgroundColor: isDarkMode ? 'transparent' : 'white',
     };
 
     if (!chartData) {
-        return <p className='text-black dark:text-white'>Loading chart...</p>; // Ensure text changes with theme
+        return <p className='text-black dark:text-white'>Loading chart...</p>;
     }
 
     return (

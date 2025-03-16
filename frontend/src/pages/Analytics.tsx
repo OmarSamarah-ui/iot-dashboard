@@ -7,7 +7,7 @@ import AddTimestamp from '../components/modals/AddTimestamp';
 import { motion } from 'framer-motion';
 
 const Analytics = () => {
-    const [devices, setDevices] = useState([]);
+    const [devices, setDevices] = useState<Device[]>([]);
     const [chartData, setChartData] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -18,14 +18,22 @@ const Analytics = () => {
 
     const [selectedDeviceId, setSelectedDeviceId] = useState<number | null>(urlDeviceId ? parseInt(urlDeviceId) : null);
 
+    interface Device {
+        id: number;
+        name: string;
+        type: string;
+        location: string;
+        status: string;
+    }
+
     useEffect(() => {
         fetch('http://localhost:5000/devices')
             .then((res) => res.json())
-            .then((data) => {
+            .then((data: Device[]) => {
                 setDevices(data);
+
                 if (data.length > 0) {
-                    // If URL deviceId exists & is valid, set it; otherwise, set first device
-                    const validDeviceId = urlDeviceId && data.some((device) => device.id === parseInt(urlDeviceId));
+                    const validDeviceId = urlDeviceId && data.some((device: Device) => device.id === parseInt(urlDeviceId));
                     setSelectedDeviceId(validDeviceId ? parseInt(urlDeviceId) : data[0].id);
                 }
             });
@@ -37,10 +45,9 @@ const Analytics = () => {
         }
     }, [selectedDeviceId, startDate, endDate]);
 
-    const fetchDeviceData = async (deviceId, startDate, endDate) => {
+    const fetchDeviceData = async (deviceId: number, startDate?: string, endDate?: string) => {
         if (!deviceId) return;
 
-        // Only include start and end if they are valid
         const params = new URLSearchParams();
         if (startDate) params.append('start', startDate);
         if (endDate) params.append('end', endDate);
@@ -60,11 +67,9 @@ const Analytics = () => {
             return;
         }
 
-        // Convert timestamp to avoid time zone issues
         const formattedTimestamp = new Date(timestamp).toISOString().replace('T', ' ').replace('Z', '');
 
         try {
-            console.log('Sending Data:', { timestamp: formattedTimestamp, value }); // Debugging log
             const response = await fetch(`http://localhost:5000/devices/${selectedDeviceId}/data`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -73,7 +78,7 @@ const Analytics = () => {
 
             if (response.ok) {
                 console.log('✅ Data Added Successfully!');
-                fetchDeviceData(selectedDeviceId, startDate, endDate); // Refresh chart
+                fetchDeviceData(selectedDeviceId, startDate, endDate);
             } else {
                 console.error('❌ Failed to add data:', await response.text());
             }
@@ -85,7 +90,7 @@ const Analytics = () => {
     const resetTimeRange = () => {
         setStartDate('');
         setEndDate('');
-        fetchDeviceData(selectedDeviceId, '', ''); // Refetch data without filters
+        fetchDeviceData(selectedDeviceId ?? 0, '', '');
     };
 
     return (
@@ -108,50 +113,32 @@ const Analytics = () => {
                     <div
                         className='flex flex-col space-y-4 p-4 rounded-md mt-3 lg:mt-0'
                         style={{
-                            backgroundColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#e5e7eb', // ✅ Dark mode background
-                            color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b', // ✅ Dark mode text
+                            backgroundColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#e5e7eb',
+                            color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b',
                         }}>
                         <h2 className='text-lg font-semibold text-center sm:text-start'>Time Range</h2>
                         <div className='flex flex-col space-y-3 items-center justify-between lg:flex-col lg:space-y-4 space-x-1 sm:flex-row'>
-                            <DatePicker
-                                selectedDate={startDate}
-                                setSelectedDate={setStartDate}
-                                placeholder='Start Date'
-                                inputStyle={{
-                                    backgroundColor: document.documentElement.classList.contains('dark') ? '#374151' : '#ffffff',
-                                    color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b',
-                                    borderColor: document.documentElement.classList.contains('dark') ? '#4b5563' : '#d1d5db',
-                                }} // ✅ Fix input styling in dark mode
-                            />
-                            <DatePicker
-                                selectedDate={endDate}
-                                setSelectedDate={setEndDate}
-                                placeholder='End Date'
-                                inputStyle={{
-                                    backgroundColor: document.documentElement.classList.contains('dark') ? '#374151' : '#ffffff',
-                                    color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b',
-                                    borderColor: document.documentElement.classList.contains('dark') ? '#4b5563' : '#d1d5db',
-                                }} // ✅ Fix input styling in dark mode
-                            />
+                            <DatePicker selectedDate={startDate} setSelectedDate={setStartDate} placeholder='Start Date' />
+                            <DatePicker selectedDate={endDate} setSelectedDate={setEndDate} placeholder='End Date' />
                             <div className='flex lg:flex-col items-center lg:mt-3 w-[50%] sm:w-[40%] lg:w-full gap-2'>
                                 <button
+                                    title='Reset time range'
                                     onClick={resetTimeRange}
                                     className='text-[1rem] w-full rounded-full py-1 font-semibold lg:mb-3 mb-0'
                                     style={{
                                         backgroundColor: document.documentElement.classList.contains('dark') ? '#6b7280' : '#9ca3af',
                                         color: '#ffffff',
-                                    }} // ✅ Fix button color in dark mode
-                                >
+                                    }}>
                                     Reset
                                 </button>
                                 <button
+                                    title='Add new timestamp'
                                     className='text-[1rem] w-full rounded-full py-1 font-semibold'
                                     onClick={() => setIsModalOpen(true)}
                                     style={{
                                         backgroundColor: document.documentElement.classList.contains('dark') ? '#2563eb' : '#3b82f6',
                                         color: '#ffffff',
-                                    }} // ✅ Fix button color in dark mode
-                                >
+                                    }}>
                                     Add
                                 </button>
                             </div>

@@ -1,13 +1,13 @@
-import { useTheme } from '../../context/ThemeContext'; // ✅ Import Theme Context
+import { useTheme } from '../../context/ThemeContext';
 
 const OverviewCard = ({ title, value, bg, darkBg }) => {
-    const { theme } = useTheme(); // ✅ Use theme from global context
+    const { theme } = useTheme();
 
     return (
         <div
             className='p-4 shadow-lg rounded-lg transition-all duration-300'
             style={{
-                backgroundColor: theme === 'dark' ? darkBg : bg, // ✅ Instant update
+                backgroundColor: theme === 'dark' ? darkBg : bg,
                 color: theme === 'dark' ? 'white' : 'black',
             }}>
             <h2 className='text-lg font-semibold mb-2'>{title}</h2>

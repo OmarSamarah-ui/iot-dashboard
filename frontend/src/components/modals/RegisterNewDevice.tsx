@@ -12,11 +12,11 @@ const RegisterNewDevice: React.FC<RegisterNewDeviceProps> = ({ isOpen, onClose, 
 
     const onSubmit = (data: any) => {
         onRegister({
-            id: Date.now(), // Generate a temporary ID
+            id: Date.now(),
             name: data.name,
             type: data.type,
             location: data.location,
-            status: 'Active', // Default to active
+            status: 'Active',
         });
         reset();
         onClose();

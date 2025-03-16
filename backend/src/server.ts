@@ -1,4 +1,4 @@
-import app from './app'; // ✅ Import Express app
+import app from './app';
 import dotenv from 'dotenv';
 
 dotenv.config();

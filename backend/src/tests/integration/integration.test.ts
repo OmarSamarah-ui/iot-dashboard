@@ -1,6 +1,6 @@
 import request from 'supertest';
-import app from '../../src/app';
-import { poolPromise, sql } from '../../src/db';
+import app from '../../app';
+import { poolPromise, sql } from '../../db';
 
 describe('Integration Tests for API', () => {
     let testDeviceId: number;
@@ -9,7 +9,7 @@ describe('Integration Tests for API', () => {
         const pool = await poolPromise;
         if (!pool) throw new Error('Database connection failed');
 
-        // ✅ Insert a test device
+        // Insert a test device
         const result = await pool
             .request()
             .input('name', sql.NVarChar, 'Test Sensor')
@@ -21,10 +21,8 @@ describe('Integration Tests for API', () => {
         testDeviceId = result.recordset[0].id;
         console.log(`✅ Test Device Created with ID: ${testDeviceId}`);
 
-        // 🛠 Ensure device is committed before tests run
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // 🔍 **Verify the device actually exists before running tests**
         let attempts = 5;
         let deviceExists = false;
         while (attempts > 0) {
@@ -46,51 +44,51 @@ describe('Integration Tests for API', () => {
         }
     });
 
-    // ✅ Fetch all devices
+    // Fetch all devices
     it('should return all devices via GET /devices', async () => {
         const res = await request(app).get('/devices');
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
     });
 
-    // ✅ Fetch time-series data for a device
+    // Fetch time-series data for a device
     it('should return time-series data for a device via GET /devices/:id/data', async () => {
         const res = await request(app).get(`/devices/${testDeviceId}/data`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
     });
 
-    // ✅ Fetch device activity trends
+    // Fetch device activity trends
     it('should return device activity via GET /api/device-activity', async () => {
         const res = await request(app).get('/api/device-activity');
         expect(res.status).toBe(200);
     });
 
-    // ✅ Fetch device type distribution
+    // Fetch device type distribution
     it('should return device type distribution via GET /api/device-types', async () => {
         const res = await request(app).get('/api/device-types');
         expect(res.status).toBe(200);
     });
 
-    // ✅ Fetch sensor alerts by type
+    // Fetch sensor alerts by type
     it('should return sensor alerts via GET /api/sensor-alerts', async () => {
         const res = await request(app).get('/api/sensor-alerts');
         expect(res.status).toBe(200);
     });
 
-    // ✅ Fetch most and least active devices
+    // Fetch most and least active devices
     it('should return device performance via GET /api/device-performance', async () => {
         const res = await request(app).get('/api/device-performance');
         expect(res.status).toBe(200);
     });
 
-    // ✅ Fetch recent events
+    // Fetch recent events
     it('should return recent events via GET /api/recent-events', async () => {
         const res = await request(app).get('/api/recent-events');
         expect(res.status).toBe(200);
     });
 
-    // ✅ Delete the test device
+    // Delete the test device
     it('should delete the created device via DELETE /devices/:id', async () => {
         const res = await request(app).delete(`/devices/${testDeviceId}`);
         expect(res.status).toBe(200);

@@ -8,7 +8,16 @@ import MostFrequentAlerts from '../components/overview/MostFrequentAlerts';
 import ExportButton from '../components/overview/ExportButton';
 
 const Overview = () => {
-    const [overviewData, setOverviewData] = useState({
+    interface OverviewData {
+        totalDevices: number;
+        activeDevices: number;
+        inactiveDevices: number;
+        avgTemperature: number;
+        avgHumidity: number;
+        recentAlerts: number;
+    }
+
+    const [overviewData, setOverviewData] = useState<OverviewData>({
         totalDevices: 0,
         activeDevices: 0,
         inactiveDevices: 0,
@@ -21,7 +30,7 @@ const Overview = () => {
         fetch('http://localhost:5000/api/overview-metrics')
             .then((res) => res.json())
             .then((data) => {
-                console.log('🚀 Overview API Response:', data); // Debugging log
+                console.log('🚀 Overview API Response:', data);
 
                 setOverviewData({
                     totalDevices: data.total_devices || 0,

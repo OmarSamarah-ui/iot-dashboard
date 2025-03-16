@@ -17,7 +17,7 @@ interface DeviceCardProps {
 
 const DeviceCard: React.FC<DeviceCardProps> = ({ device, onDelete }) => {
     const navigate = useNavigate();
-    const isDarkMode = document.documentElement.classList.contains('dark'); // ✅ Force check dark mode
+    const isDarkMode = document.documentElement.classList.contains('dark');
 
     const handleAnalyticsClick = () => {
         navigate(`/analytics?deviceId=${device.id}`);
@@ -27,8 +27,8 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ device, onDelete }) => {
         <div
             className='p-4 border rounded-md shadow-md'
             style={{
-                backgroundColor: isDarkMode ? '#1e293b' : '#ffffff', // ✅ Force correct bg
-                color: isDarkMode ? '#f1f5f9' : '#1e293b', // ✅ Force correct text color
+                backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
+                color: isDarkMode ? '#f1f5f9' : '#1e293b',
             }}>
             <h2>{device.name}</h2>
             <p style={{ color: isDarkMode ? '#cbd5e1' : '#4b5563' }}>{device.type}</p>
@@ -43,10 +43,10 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ device, onDelete }) => {
                     {device.status}
                 </span>
                 <div className='flex items-center space-x-2'>
-                    <button className='w-7 h-7 rounded-full flex items-center justify-center text-white bg-red-600 hover:bg-red-700 transition-colors ease-in' onClick={onDelete}>
+                    <button title='Delete device' className='w-7 h-7 rounded-full flex items-center justify-center text-white bg-red-600 hover:bg-red-700 transition-colors ease-in' onClick={() => onDelete(device.id)}>
                         <MdOutlineDeleteOutline />
                     </button>
-                    <button className='w-7 h-7 rounded-full flex items-center justify-center text-white bg-gray-600 hover:bg-gray-700 transition-colors ease-in' onClick={handleAnalyticsClick}>
+                    <button title='Check device chart' className='w-7 h-7 rounded-full flex items-center justify-center text-white bg-gray-600 hover:bg-gray-700 transition-colors ease-in' onClick={handleAnalyticsClick}>
                         <IoAnalytics />
                     </button>
                 </div>

@@ -19,9 +19,8 @@ const DeviceActivityChart = () => {
             setIsDarkMode(document.documentElement.classList.contains('dark'));
         };
 
-        checkDarkMode(); // Run on mount
+        checkDarkMode();
 
-        // Listen for class changes on <html>
         const observer = new MutationObserver(checkDarkMode);
         observer.observe(document.documentElement, { attributes: true });
 
@@ -32,7 +31,7 @@ const DeviceActivityChart = () => {
         fetch('http://localhost:5000/api/device-activity')
             .then((res) => res.json())
             .then((data) => {
-                console.log('🚀 Device Activity API Response:', data); // Debugging
+                console.log('🚀 Device Activity API Response:', data);
 
                 if (!data || data.length === 0) {
                     console.warn('⚠ No activity data available.');
@@ -40,7 +39,7 @@ const DeviceActivityChart = () => {
                 }
 
                 setChartData({
-                    labels: data.map((entry) => new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })), // Formats as "Mar 13"
+                    labels: data.map((entry) => new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
                     datasets: [
                         {
                             label: 'Active Devices',
@@ -62,25 +61,25 @@ const DeviceActivityChart = () => {
         plugins: {
             legend: {
                 labels: {
-                    color: isDarkMode ? 'white' : 'black', // Change legend text color
+                    color: isDarkMode ? 'white' : 'black',
                 },
             },
         },
         scales: {
             x: {
                 ticks: {
-                    color: isDarkMode ? 'white' : 'black', // Change x-axis text color
+                    color: isDarkMode ? 'white' : 'black',
                 },
                 grid: {
-                    color: isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)', // Change x-axis grid color
+                    color: isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
                 },
             },
             y: {
                 ticks: {
-                    color: isDarkMode ? 'white' : 'black', // Change y-axis text color
+                    color: isDarkMode ? 'white' : 'black',
                 },
                 grid: {
-                    color: isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)', // Change y-axis grid color
+                    color: isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
                 },
             },
         },
