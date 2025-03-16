@@ -72,7 +72,7 @@ const Devices = () => {
     }, []);
 
     return (
-        <div className='p-6 pt-0'>
+        <div className='p-6'>
             <div className='flex justify-between items-center mb-6'>
                 <h1 className='text-2xl font-bold'>Devices</h1>
                 <button className='fixed top-20 right-9 bg-blue-600 text-white px-4 py-2 rounded-full shadow-md cursor-pointer hover:bg-blue-700 transition-colors ease-in' onClick={() => setIsModalOpen(true)}>
@@ -82,7 +82,12 @@ const Devices = () => {
 
             {/* Active Devices */}
             <AnimatePresence>
-                <motion.div className='grid grid-cols-3 gap-6 mb-4' initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3, ease: 'easeInOut' }}>
+                <motion.div
+                    className='grid sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-4'
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}>
                     {devices
                         .filter((device) => device.status === 'Active')
                         .map((device) => (
@@ -105,7 +110,12 @@ const Devices = () => {
             {/* Show inactive devices only when toggled */}
             {showInactive && (
                 <AnimatePresence>
-                    <motion.div className='grid grid-cols-3 gap-6' initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3, ease: 'easeInOut' }}>
+                    <motion.div
+                        className='grid sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-4'
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}>
                         {devices
                             .filter((device) => device.status === 'Inactive') // Only Inactive devices
                             .map((device) => (

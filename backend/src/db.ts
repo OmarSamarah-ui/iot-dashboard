@@ -23,7 +23,7 @@ const poolPromise = new sql.ConnectionPool(config)
     })
     .catch((err) => {
         console.error('❌ Database connection failed:', err);
-        process.exit(1); // Exit if connection fails
+        return null; // Prevent returning 'void'
     });
 
 export { sql, poolPromise };

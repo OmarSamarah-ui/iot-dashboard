@@ -1,3 +1,5 @@
+import { motion } from 'framer-motion';
+
 const Settings = ({ theme, setTheme }) => {
     const toggleTheme = () => {
         const newTheme = theme === 'dark' ? 'light' : 'dark';
@@ -5,7 +7,7 @@ const Settings = ({ theme, setTheme }) => {
     };
 
     return (
-        <div className='p-6 pt-0'>
+        <motion.div className='p-6' initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.7 }}>
             <h1 className='text-2xl font-bold mb-6'>Settings</h1>
 
             <div className='flex items-center rounded-lg'>
@@ -15,7 +17,7 @@ const Settings = ({ theme, setTheme }) => {
                     <span className={`block w-5 h-5 rounded-full bg-white shadow-md transform duration-300 ${theme === 'dark' ? 'translate-x-7' : 'translate-x-0'}`}></span>
                 </button>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

@@ -3,12 +3,20 @@ import { sql, poolPromise } from '../db';
 
 const router = Router();
 
+const getDatabaseConnection = async () => {
+    const pool = await poolPromise;
+    if (!pool) {
+        throw new Error('Database connection is not available');
+    }
+    return pool;
+};
+
 /**
  * @route POST /devices
  * @desc Add a new IoT device
  */
 router.post('/', async (req: Request, res: Response): Promise<void> => {
-    const { name, type, location, status = 'Active' } = req.body; // Default to Active if not provided
+    const { name, type, location, status = 'Active' } = req.body;
 
     if (!name || !type || !location) {
         res.status(400).json({ error: 'All fields are required' });
@@ -16,7 +24,7 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
     }
 
     try {
-        const pool = await poolPromise;
+        const pool = await getDatabaseConnection();
         await pool
             .request()
             .input('name', sql.NVarChar, name)
@@ -38,9 +46,8 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
  */
 router.get('/', async (req: Request, res: Response): Promise<void> => {
     try {
-        const pool = await poolPromise; // Get the shared DB connection
+        const pool = await getDatabaseConnection();
         const result = await pool.request().query('SELECT * FROM devices');
-
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching devices:', error);
@@ -62,11 +69,11 @@ router.post('/:id/data', async (req: Request, res: Response): Promise<void> => {
     }
 
     try {
-        const pool = await poolPromise;
+        const pool = await getDatabaseConnection();
         await pool
             .request()
             .input('device_id', sql.Int, id)
-            .input('timestamp', sql.DateTime, new Date(timestamp)) // Ensure correct datetime format
+            .input('timestamp', sql.DateTime, new Date(timestamp))
             .input('value', sql.Float, value)
             .query('INSERT INTO time_series_data (device_id, timestamp, value) VALUES (@device_id, @timestamp, @value)');
 
@@ -86,7 +93,7 @@ router.get('/:id/data', async (req: Request, res: Response): Promise<void> => {
     const { start, end } = req.query;
 
     try {
-        const pool = await poolPromise; // Get DB connection
+        const pool = await getDatabaseConnection();
         let query = `SELECT * FROM time_series_data WHERE device_id = @device_id`;
 
         const request = pool.request().input('device_id', sql.Int, id);
@@ -115,11 +122,23 @@ router.get('/:id/data', async (req: Request, res: Response): Promise<void> => {
  * @route DELETE /devices/:id
  * @desc Delete a device by ID
  */
+/**
+ * @route DELETE /devices/:id
+ * @desc Delete a device by ID
+ */
 router.delete('/:id', async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
 
     try {
         const pool = await poolPromise;
+        if (!pool) {
+            throw new Error('Database connection is not available');
+        }
+
+        // 🛠 Step 1: Delete related alerts first
+        await pool.request().input('id', sql.Int, id).query('DELETE FROM alerts WHERE device_id = @id');
+
+        // 🛠 Step 2: Now delete the device
         const result = await pool.request().input('id', sql.Int, id).query('DELETE FROM devices WHERE id = @id');
 
         if (result.rowsAffected[0] === 0) {

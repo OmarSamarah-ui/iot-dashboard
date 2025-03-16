@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion'; // ✅ Import Framer Motion
 import OverviewCard from '../components/overview/OverviewCard';
 import DeviceActivityChart from '../components/overview/DeviceActivityChart';
 import AlertsChart from '../components/overview/AlertsChart';
 import RecentEventsTable from '../components/overview/RecentEventsTable';
 import MostFrequentAlerts from '../components/overview/MostFrequentAlerts';
+import ExportButton from '../components/overview/ExportButton';
 
 const Overview = () => {
     const [overviewData, setOverviewData] = useState({
@@ -34,28 +36,61 @@ const Overview = () => {
     }, []);
 
     return (
-        <div className='p-6 pt-0'>
-            <h1 className='text-2xl font-bold mb-6'>Overview</h1>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className='p-6'>
+            {/* Animated Title */}
+            <motion.div className='mb-6 flex items-center justify-between' initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.7, ease: 'easeOut' }}>
+                <h1 className='text-2xl font-bold '>Overview</h1>
+                <div className='flex justify-end mb-4'>
+                    <ExportButton overviewData={overviewData} />
+                </div>
+            </motion.div>
 
-            {/* Overview Cards */}
-            <div className='grid grid-cols-4 gap-4 mb-8'>
-                <OverviewCard title='Total devices' value={overviewData.totalDevices} bg='#D1D5DB' darkBg='#4B5563' />
-                <OverviewCard title='Active devices' value={overviewData.activeDevices} bg='#86EFAC' darkBg='#15803D' />
-                <OverviewCard title='Inactive devices' value={overviewData.inactiveDevices} bg='#F87171' darkBg='#7F1D1D' />
-                <OverviewCard title='Recent alerts (24h)' value={overviewData.recentAlerts} bg='#FCD34D' darkBg='#B45309' />
-            </div>
+            {/* Animated Overview Cards */}
+            <motion.div
+                className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8'
+                initial='hidden'
+                animate='visible'
+                variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                        opacity: 1,
+                        transition: { staggerChildren: 0.2 },
+                    },
+                }}>
+                <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
+                    <OverviewCard title='Total devices' value={overviewData.totalDevices} bg='#D1D5DB' darkBg='#4B5563' />
+                </motion.div>
+                <motion.div initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
+                    <OverviewCard title='Active devices' value={overviewData.activeDevices} bg='#86EFAC' darkBg='#15803D' />
+                </motion.div>
+                <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
+                    <OverviewCard title='Inactive devices' value={overviewData.inactiveDevices} bg='#F87171' darkBg='#7F1D1D' />
+                </motion.div>
+                <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
+                    <OverviewCard title='Recent alerts (24h)' value={overviewData.recentAlerts} bg='#FCD34D' darkBg='#B45309' />
+                </motion.div>
+            </motion.div>
 
-            {/* Charts and Tables */}
-            <div className='grid grid-cols-2 gap-6'>
-                <DeviceActivityChart />
-                <AlertsChart />
-            </div>
+            {/* Animated Charts */}
+            <motion.div className='grid grid-cols-1 lg:grid-cols-2 gap-6' initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.7 }}>
+                <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.7 }}>
+                    <DeviceActivityChart />
+                </motion.div>
+                <motion.div initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.7 }}>
+                    <AlertsChart />
+                </motion.div>
+            </motion.div>
 
-            <div className='grid grid-cols-2 gap-6 mt-6'>
-                <RecentEventsTable />
-                <MostFrequentAlerts />
-            </div>
-        </div>
+            {/* Animated Tables */}
+            <motion.div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6' initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.7 }}>
+                <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.7 }}>
+                    <RecentEventsTable />
+                </motion.div>
+                <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.7 }}>
+                    <MostFrequentAlerts />
+                </motion.div>
+            </motion.div>
+        </motion.div>
     );
 };
 

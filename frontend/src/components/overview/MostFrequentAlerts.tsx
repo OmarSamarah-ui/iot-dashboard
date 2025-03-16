@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
+import { ResponsiveContainer } from 'recharts';
 
 const MostFrequentAlerts = () => {
     const [chartData, setChartData] = useState<{
@@ -54,6 +55,7 @@ const MostFrequentAlerts = () => {
     // Chart options that change only text labels & ticks
     const chartOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 labels: {
@@ -78,7 +80,9 @@ const MostFrequentAlerts = () => {
     return (
         <div className='bg-white  p-4 shadow-md rounded-md'>
             <h2 className='text-lg font-semibold mb-2 '>Most Frequent Alerts</h2>
-            <Bar data={chartData} options={chartOptions} />
+            <ResponsiveContainer width='100%' height={400}>
+                <Bar data={chartData} options={chartOptions} />
+            </ResponsiveContainer>
         </div>
     );
 };
