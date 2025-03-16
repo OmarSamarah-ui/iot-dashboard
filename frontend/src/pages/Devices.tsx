@@ -74,7 +74,11 @@ const Devices = () => {
     return (
         <div className='p-6'>
             <div className='flex justify-between items-center mb-6'>
-                <h1 className='text-2xl font-bold'>Devices</h1>
+                <div className='text-2xl font-light tracking-wider flex items-center'>
+                    <div className='h-[0.1rem] lg:w-[200px] w-[100px] bg-gray-400'></div>
+                    <h1 className='mx-3'>DEVICES</h1>
+                    <div className='h-[0.1rem] lg:w-[200px] w-[100px] bg-gray-400'></div>
+                </div>
                 <button className='fixed top-20 right-9 bg-blue-600 text-white px-4 py-2 rounded-full shadow-md cursor-pointer hover:bg-blue-700 transition-colors ease-in' onClick={() => setIsModalOpen(true)}>
                     + New
                 </button>

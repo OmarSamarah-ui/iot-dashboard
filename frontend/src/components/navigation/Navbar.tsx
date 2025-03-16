@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { MdOutlineAnalytics, MdOutlineSettingsInputComponent, MdOutlineSpaceDashboard } from 'react-icons/md';
 import { DiHtml5DeviceAccess } from 'react-icons/di';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
     const { theme, setTheme } = useTheme();
@@ -57,7 +58,12 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             {isMobileMenuOpen && (
-                <ul className='absolute top-14 left-0 w-full bg-gray-800 dark:bg-gray-900 p-4 flex flex-col items-center space-y-4 md:hidden'>
+                <motion.ul
+                    className='absolute top-14 left-0 w-full bg-gray-800 dark:bg-gray-900 p-4 flex flex-col space-y-4 md:hidden'
+                    initial={{ y: -50, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -50, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}>
                     <li>
                         <Link to='/' className='flex items-center p-2 rounded-lg hover:bg-gray-700'>
                             <MdOutlineSpaceDashboard className='w-5 h-5' />
@@ -82,7 +88,7 @@ const Navbar = () => {
                             <span className='ml-3'>Settings</span>
                         </Link>
                     </li>
-                </ul>
+                </motion.ul>
             )}
         </nav>
     );

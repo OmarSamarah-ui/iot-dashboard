@@ -38,8 +38,12 @@ const Overview = () => {
     return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className='p-6'>
             {/* Animated Title */}
-            <motion.div className='mb-6 flex items-center justify-between' initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.7, ease: 'easeOut' }}>
-                <h1 className='text-2xl font-bold '>Overview</h1>
+            <motion.div className='mb-6 flex flex-col items-center justify-between sm:flex-row' initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.7, ease: 'easeOut' }}>
+                <div className='text-2xl font-light tracking-wider flex items-center mb-4 sm:mb-0'>
+                    <div className='h-[0.1rem] lg:w-[200px] w-[100px] bg-gray-400'></div>
+                    <h1 className='mx-3'>OVERVIEW</h1>
+                    <div className='h-[0.1rem] lg:w-[200px] w-[100px] bg-gray-400'></div>
+                </div>
                 <div className='flex justify-end mb-4'>
                     <ExportButton overviewData={overviewData} />
                 </div>

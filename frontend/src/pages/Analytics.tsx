@@ -90,7 +90,10 @@ const Analytics = () => {
 
     return (
         <motion.div className='p-6' initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.7 }}>
-            <h1 className='text-2xl font-bold mb-12'>Analytics</h1>
+            <div className='text-2xl font-light tracking-wider flex items-center mb-10'>
+                <div className='h-[0.1rem] w-[200px] bg-gray-400'></div>
+                <h1 className='mx-3'>ANALYTICS</h1> <div className='h-[0.1rem] w-[200px] bg-gray-400'></div>
+            </div>
             <div className='mx-auto sm-[100%] lg:w-[90%] xl:w-[80%]'>
                 {/* Device Selection */}
                 <div className='mb-8'>

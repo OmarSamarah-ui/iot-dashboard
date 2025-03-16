@@ -8,7 +8,10 @@ const Settings = ({ theme, setTheme }) => {
 
     return (
         <motion.div className='p-6' initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.7 }}>
-            <h1 className='text-2xl font-bold mb-6'>Settings</h1>
+            <div className='text-2xl font-light tracking-wider flex items-center mb-6'>
+                <div className='h-[0.1rem] w-[200px] bg-gray-400'></div>
+                <h1 className='mx-3'>SETTINGS</h1> <div className='h-[0.1rem] w-[200px] bg-gray-400'></div>
+            </div>
 
             <div className='flex items-center rounded-lg'>
                 <span className='mr-4'>Dark Mode</span>
