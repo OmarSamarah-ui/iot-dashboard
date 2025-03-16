@@ -75,7 +75,7 @@ const Devices = () => {
         <div className='p-6 pt-0'>
             <div className='flex justify-between items-center mb-6'>
                 <h1 className='text-2xl font-bold'>Devices</h1>
-                <button className='fixed top-20 right-12 bg-blue-600 text-white px-4 py-2 rounded-full shadow-md cursor-pointer hover:bg-blue-700 transition-colors ease-in' onClick={() => setIsModalOpen(true)}>
+                <button className='fixed top-20 right-9 bg-blue-600 text-white px-4 py-2 rounded-full shadow-md cursor-pointer hover:bg-blue-700 transition-colors ease-in' onClick={() => setIsModalOpen(true)}>
                     + New
                 </button>
             </div>

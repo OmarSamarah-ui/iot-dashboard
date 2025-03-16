@@ -18,3 +18,57 @@ body {
 button {
     cursor: pointer;
 }
+
+/* Adjust Navbar & Sidebar */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Full page background in dark mode */
+html.dark body {
+    background-color: #1a202c !important;
+    color: #e2e8f0 !important;
+}
+
+/* Ensure cards & containers adjust to dark mode */
+html.dark .bg-white {
+    background-color: #2d3748 !important;
+}
+
+/* Ensure text is readable in dark mode */
+html.dark .text-gray-900,
+html.dark .text-black {
+    color: white !important;
+}
+
+html.dark .text-gray-700 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix Overview Cards */
+html.dark .overview-card {
+    background-color: #2f3b4a !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #3b4a5a;
+}
+
+/* Dark Sidebar */
+html.dark .sidebar {
+    background-color: #2a2d3e !important;
+}
+
+/* Dark Navbar */
+html.dark .navbar {
+    background-color: #1a1c29 !important;
+}
+
+.react-datepicker__input-container input::placeholder {
+    color: #6b7280; /* Default light mode */
+}
+
+.dark .react-datepicker__input-container input::placeholder {
+    color: #d1d5db !important; /* Light gray for dark mode */
+}
