@@ -1,22 +1,28 @@
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { motion } from 'framer-motion';
+
+export interface Device {
+    id: number;
+    name: string;
+    type: string;
+    location: string;
+    status: 'Active' | 'Inactive';
+}
 
 interface RegisterNewDeviceProps {
     isOpen: boolean;
     onClose: () => void;
-    onRegister: (device: any) => void;
+    onRegister: (device: Device) => Promise<void>;
 }
 
 const RegisterNewDevice: React.FC<RegisterNewDeviceProps> = ({ isOpen, onClose, onRegister }) => {
-    const { register, handleSubmit, reset } = useForm();
+    const { register, handleSubmit, reset } = useForm<Omit<Device, 'id' | 'status'>>();
 
-    const onSubmit = (data: any) => {
+    const onSubmit: SubmitHandler<Omit<Device, 'id' | 'status'>> = (data) => {
         onRegister({
             id: Date.now(),
-            name: data.name,
-            type: data.type,
-            location: data.location,
             status: 'Active',
+            ...data,
         });
         reset();
         onClose();

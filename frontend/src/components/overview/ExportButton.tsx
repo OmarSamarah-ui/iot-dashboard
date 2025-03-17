@@ -1,14 +1,7 @@
 import { FaFileCsv, FaFileExcel, FaFileCode } from 'react-icons/fa';
 import exportData from '../../utils/exportData';
+import { OverviewData } from '../../types';
 
-interface OverviewData {
-    totalDevices: number;
-    activeDevices: number;
-    inactiveDevices: number;
-    avgTemperature: number;
-    avgHumidity: number;
-    recentAlerts: number;
-}
 const ExportButton = ({ overviewData }: { overviewData: OverviewData }) => {
     return (
         <div className='flex items-center space-x-3 bg-gray-400  p-2 rounded-md shadow-md'>

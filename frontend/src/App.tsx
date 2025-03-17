@@ -9,7 +9,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
         if (theme === 'dark') {
@@ -24,11 +23,11 @@ function App() {
         <Router>
             <div className='flex flex-col max-h-screen w-screen overflow-y-hidden'>
                 {/* Navbar controls sidebar toggle */}
-                <Navbar theme={theme} setTheme={setTheme} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+                <Navbar />
 
                 <div className='flex overflow-y-auto'>
                     {/* Sidebar with toggle functionality */}
-                    <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+                    <Sidebar />
 
                     {/* Main Content */}
                     <main className='flex-1 pt-16 p-4 transition-all duration-300 overflow-y-auto'>

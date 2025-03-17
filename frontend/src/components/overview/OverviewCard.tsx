@@ -1,7 +1,14 @@
 import { useTheme } from '../../context/ThemeContext';
 
-const OverviewCard = ({ title, value, bg, darkBg }) => {
-    const { theme } = useTheme();
+interface OverviewCardProps {
+    title: string;
+    value: number | string;
+    bg: string;
+    darkBg: string;
+}
+
+const OverviewCard: React.FC<OverviewCardProps> = ({ title, value, bg, darkBg }) => {
+    const { theme } = useTheme() as { theme: string };
 
     return (
         <div

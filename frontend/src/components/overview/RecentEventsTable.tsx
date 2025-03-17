@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 
+interface EventType {
+    timestamp: string;
+    event_message: string;
+}
+
 const RecentEventsTable = () => {
-    const [events, setEvents] = useState([]);
+    const [events, setEvents] = useState<EventType[]>([]);
 
     useEffect(() => {
         fetch('http://localhost:5000/api/recent-events')
             .then((res) => res.json())
-            .then((data) => setEvents(data))
+            .then((data: EventType[]) => setEvents(data))
             .catch((error) => console.error('Error fetching events:', error));
     }, []);
 

@@ -1,18 +1,12 @@
 import { Router } from 'express';
-import { sql, poolPromise } from '../db';
+import { pool } from '../db';
 
 const router = Router();
 
 /**
  * Ensures that the database connection is available before querying.
  */
-const getDatabaseConnection = async () => {
-    const pool = await poolPromise;
-    if (!pool) {
-        throw new Error('❌ Database connection is not available');
-    }
-    return pool;
-};
+const getDatabaseConnection = async () => pool;
 
 /**
  * @route GET /api/overview-metrics
@@ -21,17 +15,17 @@ const getDatabaseConnection = async () => {
 router.get('/overview-metrics', async (req, res) => {
     try {
         const pool = await getDatabaseConnection();
-        const result = await pool.request().query(`
+        const result = await pool.query(`
             SELECT 
                 (SELECT COUNT(*) FROM devices) AS total_devices,
                 (SELECT COUNT(*) FROM devices WHERE status = 'Active') AS online_devices,
                 (SELECT COUNT(*) FROM devices WHERE status = 'Inactive') AS offline_devices,
                 (SELECT AVG(value) FROM time_series_data WHERE device_id IN (SELECT id FROM devices WHERE type = 'Temperature Sensor')) AS avg_temperature,
                 (SELECT AVG(value) FROM time_series_data WHERE device_id IN (SELECT id FROM devices WHERE type = 'Humidity Sensor')) AS avg_humidity,
-                (SELECT COUNT(*) FROM alerts WHERE timestamp >= DATEADD(DAY, -1, GETDATE())) AS alerts_last_24h
+                (SELECT COUNT(*) FROM alerts WHERE timestamp >= NOW() - INTERVAL '1 day') AS alerts_last_24h
         `);
 
-        res.json(result.recordset[0]);
+        res.json(result.rows[0]);
     } catch (error) {
         console.error('❌ Error fetching overview metrics:', error);
         res.status(500).json({ error: 'Server error' });
@@ -45,15 +39,15 @@ router.get('/overview-metrics', async (req, res) => {
 router.get('/device-activity', async (req, res) => {
     try {
         const pool = await getDatabaseConnection();
-        const result = await pool.request().query(`
-            SELECT CAST(timestamp AS DATE) AS date, COUNT(DISTINCT device_id) AS active_devices
+        const result = await pool.query(`
+            SELECT DATE(timestamp) AS date, COUNT(DISTINCT device_id) AS active_devices
             FROM time_series_data
-            WHERE timestamp >= DATEADD(DAY, -30, GETDATE())  
-            GROUP BY CAST(timestamp AS DATE)
+            WHERE timestamp >= NOW() - INTERVAL '30 days'  
+            GROUP BY date
             ORDER BY date ASC
         `);
 
-        res.json(result.recordset);
+        res.json(result.rows);
     } catch (error) {
         console.error('❌ Error fetching device activity:', error);
         res.status(500).json({ error: 'Server error' });
@@ -67,9 +61,9 @@ router.get('/device-activity', async (req, res) => {
 router.get('/device-types', async (req, res) => {
     try {
         const pool = await getDatabaseConnection();
-        const result = await pool.request().query(`SELECT type, COUNT(*) AS count FROM devices GROUP BY type`);
+        const result = await pool.query(`SELECT type, COUNT(*) AS count FROM devices GROUP BY type`);
 
-        const response = result.recordset.reduce((acc, row) => {
+        const response = result.rows.reduce((acc, row) => {
             acc[row.type] = row.count;
             return acc;
         }, {});
@@ -88,9 +82,9 @@ router.get('/device-types', async (req, res) => {
 router.get('/sensor-alerts', async (req, res) => {
     try {
         const pool = await getDatabaseConnection();
-        const result = await pool.request().query(`SELECT alert_type, COUNT(*) AS count FROM alerts GROUP BY alert_type`);
+        const result = await pool.query(`SELECT alert_type, COUNT(*) AS count FROM alerts GROUP BY alert_type`);
 
-        const response = result.recordset.reduce((acc, row) => {
+        const response = result.rows.reduce((acc, row) => {
             acc[row.alert_type] = row.count;
             return acc;
         }, {});
@@ -103,53 +97,20 @@ router.get('/sensor-alerts', async (req, res) => {
 });
 
 /**
- * @route GET /api/device-performance
- * @desc Get most and least active devices
- */
-router.get('/device-performance', async (req, res) => {
-    try {
-        const pool = await getDatabaseConnection();
-
-        const mostActive = await pool.request().query(`
-            SELECT TOP 5 d.id, d.name, COUNT(t.id) AS data_points
-            FROM devices d
-            JOIN time_series_data t ON d.id = t.device_id
-            GROUP BY d.id, d.name
-            ORDER BY data_points DESC
-        `);
-
-        const leastActive = await pool.request().query(`
-            SELECT TOP 5 d.id, d.name, COUNT(t.id) AS data_points
-            FROM devices d
-            LEFT JOIN time_series_data t ON d.id = t.device_id
-            GROUP BY d.id, d.name
-            ORDER BY data_points ASC
-        `);
-
-        res.json({
-            most_active: mostActive.recordset,
-            least_active: leastActive.recordset,
-        });
-    } catch (error) {
-        console.error('❌ Error fetching device performance:', error);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-/**
  * @route GET /api/recent-events
  * @desc Get last 5 system events
  */
 router.get('/recent-events', async (req, res) => {
     try {
         const pool = await getDatabaseConnection();
-        const result = await pool.request().query(`
+        const result = await pool.query(`
             SELECT timestamp, event_message
             FROM events
             ORDER BY timestamp DESC
+            LIMIT 15
         `);
 
-        res.json(result.recordset);
+        res.json(result.rows);
     } catch (error) {
         console.error('❌ Error fetching recent events:', error);
         res.status(500).json({ error: 'Server error' });
@@ -163,16 +124,17 @@ router.get('/recent-events', async (req, res) => {
 router.get('/most-frequent-alerts', async (req, res) => {
     try {
         const pool = await getDatabaseConnection();
-        const result = await pool.request().query(`
-            SELECT TOP 5 alert_type, COUNT(*) as count
+        const result = await pool.query(`
+            SELECT alert_type, COUNT(*) as count
             FROM alerts
             GROUP BY alert_type
             ORDER BY count DESC
+            LIMIT 5
         `);
 
         res.json({
-            alertTypes: result.recordset.map((row) => row.alert_type),
-            alertCounts: result.recordset.map((row) => row.count),
+            alertTypes: result.rows.map((row) => row.alert_type),
+            alertCounts: result.rows.map((row) => row.count),
         });
     } catch (error) {
         console.error('❌ Error fetching most frequent alerts:', error);

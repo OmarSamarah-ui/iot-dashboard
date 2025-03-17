@@ -1,22 +1,14 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion'; // ✅ Import Framer Motion
+import { motion } from 'framer-motion';
 import OverviewCard from '../components/overview/OverviewCard';
 import DeviceActivityChart from '../components/overview/DeviceActivityChart';
 import AlertsChart from '../components/overview/AlertsChart';
 import RecentEventsTable from '../components/overview/RecentEventsTable';
 import MostFrequentAlerts from '../components/overview/MostFrequentAlerts';
 import ExportButton from '../components/overview/ExportButton';
+import { OverviewData } from '../types';
 
 const Overview = () => {
-    interface OverviewData {
-        totalDevices: number;
-        activeDevices: number;
-        inactiveDevices: number;
-        avgTemperature: number;
-        avgHumidity: number;
-        recentAlerts: number;
-    }
-
     const [overviewData, setOverviewData] = useState<OverviewData>({
         totalDevices: 0,
         activeDevices: 0,

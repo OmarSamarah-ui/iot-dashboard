@@ -9,8 +9,8 @@ import { motion } from 'framer-motion';
 const Analytics = () => {
     const [devices, setDevices] = useState<Device[]>([]);
     const [chartData, setChartData] = useState([]);
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [endDate, setEndDate] = useState<Date | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [searchParams] = useSearchParams();
@@ -41,7 +41,7 @@ const Analytics = () => {
 
     useEffect(() => {
         if (selectedDeviceId) {
-            fetchDeviceData(selectedDeviceId, startDate, endDate);
+            fetchDeviceData(selectedDeviceId, startDate ? startDate.toISOString().split('T')[0] : undefined, endDate ? endDate.toISOString().split('T')[0] : undefined);
         }
     }, [selectedDeviceId, startDate, endDate]);
 
@@ -78,7 +78,7 @@ const Analytics = () => {
 
             if (response.ok) {
                 console.log('✅ Data Added Successfully!');
-                fetchDeviceData(selectedDeviceId, startDate, endDate);
+                fetchDeviceData(selectedDeviceId, startDate ? startDate.toISOString().split('T')[0] : undefined, endDate ? endDate.toISOString().split('T')[0] : undefined);
             } else {
                 console.error('❌ Failed to add data:', await response.text());
             }
@@ -88,8 +88,8 @@ const Analytics = () => {
     };
 
     const resetTimeRange = () => {
-        setStartDate('');
-        setEndDate('');
+        setStartDate(null);
+        setEndDate(null);
         fetchDeviceData(selectedDeviceId ?? 0, '', '');
     };
 

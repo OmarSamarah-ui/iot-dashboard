@@ -1,29 +1,16 @@
-import sql from 'mssql';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const config: sql.config = {
-    user: process.env.DB_USER as string,
-    password: process.env.DB_PASSWORD as string,
-    server: process.env.DB_SERVER as string,
-    database: process.env.DB_NAME as string,
-    options: {
-        encrypt: true,
-        trustServerCertificate: true,
-    },
-};
+const pool = new Pool({
+    connectionString: process.env.DB_SERVER,
+    ssl: { rejectUnauthorized: false },
+});
 
-// Single connection pool
-const poolPromise = new sql.ConnectionPool(config)
-    .connect()
-    .then((pool) => {
-        console.log('✅ Connected to MSSQL Database');
-        return pool;
-    })
-    .catch((err) => {
-        console.error('❌ Database connection failed:', err);
-        return null;
-    });
+// Test Connection
+pool.connect()
+    .then(() => console.log('✅ Connected to Supabase PostgreSQL'))
+    .catch((err) => console.error('❌ Database connection failed:', err));
 
-export { sql, poolPromise };
+export { pool };

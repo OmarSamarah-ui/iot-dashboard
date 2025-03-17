@@ -1,8 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 
+interface ChartData {
+    labels: string[];
+    datasets: {
+        label: string;
+        data: number[];
+        backgroundColor: string[];
+    }[];
+}
+
 const AlertsChart = () => {
-    const [chartData, setChartData] = useState<any>(null);
+    const [chartData, setChartData] = useState<ChartData | null>(null);
     const [isDarkMode, setIsDarkMode] = useState(false);
 
     useEffect(() => {
@@ -21,7 +30,7 @@ const AlertsChart = () => {
     useEffect(() => {
         fetch('http://localhost:5000/api/sensor-alerts')
             .then((res) => res.json())
-            .then((data) => {
+            .then((data: Record<string, number>) => {
                 if (data && Object.keys(data).length > 0) {
                     const alertTypes = Object.keys(data);
                     const alertCounts = Object.values(data);

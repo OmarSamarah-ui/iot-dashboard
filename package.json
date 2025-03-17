@@ -1,0 +1,23 @@
+{
+    "name": "dashboardiot",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "concurrently \"node backend/dist/server.js\" \"cd frontend && vite\"",
+        "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+        "build": "cd frontend && npm run build"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/OmarSamarah-ui/iot-dashboard.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "bugs": {
+        "url": "https://github.com/OmarSamarah-ui/iot-dashboard/issues"
+    },
+    "homepage": "https://github.com/OmarSamarah-ui/iot-dashboard#readme"
+}

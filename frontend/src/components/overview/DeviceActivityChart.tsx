@@ -2,15 +2,21 @@ import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 
+Chart.register(...registerables);
+
+interface DeviceActivityEntry {
+    date: string;
+    active_devices: number;
+}
+
 const DeviceActivityChart = () => {
     const [chartData, setChartData] = useState<{
         labels: string[];
-        datasets: { label: string; data: number[]; backgroundColor: string }[];
+        datasets: { label: string; data: number[]; backgroundColor: string; borderColor: string; fill: boolean; tension: number }[];
     }>({
         labels: [],
         datasets: [],
     });
-    Chart.register(...registerables);
 
     const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -30,7 +36,7 @@ const DeviceActivityChart = () => {
     useEffect(() => {
         fetch('http://localhost:5000/api/device-activity')
             .then((res) => res.json())
-            .then((data) => {
+            .then((data: DeviceActivityEntry[]) => {
                 console.log('🚀 Device Activity API Response:', data);
 
                 if (!data || data.length === 0) {
@@ -39,11 +45,11 @@ const DeviceActivityChart = () => {
                 }
 
                 setChartData({
-                    labels: data.map((entry) => new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                    labels: data.map((entry: DeviceActivityEntry) => new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
                     datasets: [
                         {
                             label: 'Active Devices',
-                            data: data.map((entry) => entry.active_devices),
+                            data: data.map((entry: DeviceActivityEntry) => entry.active_devices),
                             borderColor: 'blue',
                             backgroundColor: 'rgba(0, 123, 255, 0.2)',
                             fill: true,
