@@ -1,24 +1,23 @@
 import request from 'supertest';
 import app from '../../app';
-import { poolPromise, sql } from '../../db';
+import { pool } from '../../db';
 
-describe('API Endpoints', () => {
+describe('API Endpoints with Supabase PostgreSQL', () => {
     let testDeviceId: number;
 
     beforeAll(async () => {
-        const pool = await poolPromise;
-        if (!pool) throw new Error('Database connection failed');
-
-        // Insert a test device
-        const result = await pool
-            .request()
-            .input('name', sql.NVarChar, 'API Test Sensor')
-            .input('type', sql.NVarChar, 'Temperature Sensor')
-            .input('location', sql.NVarChar, 'Lab')
-            .input('status', sql.NVarChar, 'Active')
-            .query('INSERT INTO devices (name, type, location, status) OUTPUT INSERTED.id VALUES (@name, @type, @location, @status)');
-
-        testDeviceId = result.recordset[0].id;
+        const client = await pool.connect();
+        try {
+            // Insert a test device
+            const result = await client.query(
+                `INSERT INTO devices (name, type, location, status) 
+                 VALUES ($1, $2, $3, $4) RETURNING id`,
+                ['API Test Sensor', 'Temperature Sensor', 'Lab', 'Active']
+            );
+            testDeviceId = result.rows[0].id;
+        } finally {
+            client.release();
+        }
     });
 
     // Test adding time-series data
@@ -44,9 +43,11 @@ describe('API Endpoints', () => {
     });
 
     afterAll(async () => {
-        const pool = await poolPromise;
-        if (pool) {
-            await pool.request().query(`DELETE FROM devices WHERE id = ${testDeviceId}`);
+        const client = await pool.connect();
+        try {
+            await client.query(`DELETE FROM devices WHERE id = $1`, [testDeviceId]);
+        } finally {
+            client.release();
         }
     });
 });

@@ -2,38 +2,33 @@ version: '3.8'
 
 services:
     backend:
-        build: ./backend
+        build:
+            context: .
+            dockerfile: Dockerfile
         ports:
             - '5000:5000'
         environment:
-            - NODE_ENV=production
-            - DB_SERVER=mssql_container
-            - DB_PASSWORD=mysql123
-            - DB_NAME=iot_dashboard
-        depends_on:
-            - mssql
+            - NODE_ENV=development
+            - DB_SERVER=postgresql://postgres:SupaBasePass01!@db.pbdodcjhafdkivnkctal.supabase.co:5432/postgres
+            - DB_USER=postgres
+            - DB_PASSWORD=SupaBasePass01!
+            - DB_NAME=postgres
+            - DB_PORT=5432
         networks:
             - dashboardiot_network
+        command: ['/bin/sh', '-c', 'cd backend && npm run dev']
 
     frontend:
-        build: ./frontend
+        build:
+            context: .
+            dockerfile: Dockerfile
         ports:
-            - '3000:3000'
+            - '5173:5173'
         depends_on:
             - backend
         networks:
             - dashboardiot_network
-
-    mssql:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        container_name: mssql_container
-        ports:
-            - '1433:1433'
-        environment:
-            SA_PASSWORD: 'mysql123'
-            ACCEPT_EULA: 'Y'
-        networks:
-            - dashboardiot_network
+        command: ['/bin/sh', '-c', 'cd frontend && npm run dev']
 
 networks:
     dashboardiot_network:

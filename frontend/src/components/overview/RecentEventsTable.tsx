@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { baseUrl } from '../../utils/baseUrl';
 
 interface EventType {
     timestamp: string;
@@ -9,7 +10,7 @@ const RecentEventsTable = () => {
     const [events, setEvents] = useState<EventType[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/recent-events')
+        fetch(`${baseUrl}/api/recent-events`)
             .then((res) => res.json())
             .then((data: EventType[]) => setEvents(data))
             .catch((error) => console.error('Error fetching events:', error));

@@ -1,13 +1,11 @@
-# Use an official Node.js image as the base image
-FROM node:18
+# Use an official Node.js image
+FROM node:20
 
 # Set working directory
 WORKDIR /app
 
-# Copy package.json files from root, backend, and frontend
-COPY package.json package-lock.json ./
-COPY backend/package.json backend/package-lock.json backend/
-COPY frontend/package.json frontend/package-lock.json frontend/
+# Copy the entire project (backend, frontend, and other necessary files)
+COPY . .
 
 # Install root dependencies
 RUN npm install
@@ -16,15 +14,15 @@ RUN npm install
 WORKDIR /app/backend
 RUN npm install
 
-# Install frontend dependencies & build
+# Install frontend dependencies
 WORKDIR /app/frontend
-RUN npm install && npm run build
+RUN npm install
+
+# Expose necessary ports
+EXPOSE 5000 5173
 
 # Move back to root directory
 WORKDIR /app
 
-# Expose necessary ports
-EXPOSE 5000 3000
-
-# Start both backend and frontend using concurrently
-CMD ["npm", "start"]
+# Default command will be handled by docker-compose
+CMD ["npm", "run", "dev"]

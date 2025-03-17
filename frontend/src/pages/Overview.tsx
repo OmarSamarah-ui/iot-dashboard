@@ -7,6 +7,7 @@ import RecentEventsTable from '../components/overview/RecentEventsTable';
 import MostFrequentAlerts from '../components/overview/MostFrequentAlerts';
 import ExportButton from '../components/overview/ExportButton';
 import { OverviewData } from '../types';
+import { baseUrl } from '../utils/baseUrl';
 
 const Overview = () => {
     const [overviewData, setOverviewData] = useState<OverviewData>({
@@ -19,7 +20,7 @@ const Overview = () => {
     });
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/overview-metrics')
+        fetch(`${baseUrl}/api/overview-metrics`)
             .then((res) => res.json())
             .then((data) => {
                 console.log('🚀 Overview API Response:', data);

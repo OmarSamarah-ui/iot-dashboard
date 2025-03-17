@@ -5,6 +5,7 @@ import DatePicker from '../components/devices/DatePicker';
 import { useSearchParams } from 'react-router-dom';
 import AddTimestamp from '../components/modals/AddTimestamp';
 import { motion } from 'framer-motion';
+import { baseUrl } from '../utils/baseUrl';
 
 const Analytics = () => {
     const [devices, setDevices] = useState<Device[]>([]);
@@ -27,7 +28,7 @@ const Analytics = () => {
     }
 
     useEffect(() => {
-        fetch('http://localhost:5000/devices')
+        fetch(`${baseUrl}/devices`)
             .then((res) => res.json())
             .then((data: Device[]) => {
                 setDevices(data);

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import DeviceCard from '../components/devices/DeviceCard';
 import RegisterNewDevice from '../components/modals/RegisterNewDevice';
 import DeleteDevice from '../components/modals/DeleteDevice';
+import { baseUrl } from '../utils/baseUrl';
 
 const Devices = () => {
     const [devices, setDevices] = useState<Device[]>([]);
@@ -22,7 +23,7 @@ const Devices = () => {
 
     const handleRegisterDevice = async (newDevice: Device) => {
         try {
-            const response = await fetch('http://localhost:5000/devices', {
+            const response = await fetch(`${baseUrl}/devices`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newDevice),
@@ -41,7 +42,7 @@ const Devices = () => {
     const handleDeleteDevice = async () => {
         if (!deviceToDelete) return;
         try {
-            const response = await fetch(`http://localhost:5000/devices/${deviceToDelete}`, {
+            const response = await fetch(`${baseUrl}/devices/${deviceToDelete}`, {
                 method: 'DELETE',
             });
 
@@ -59,7 +60,7 @@ const Devices = () => {
 
     const fetchDevices = async () => {
         try {
-            const response = await fetch('http://localhost:5000/devices');
+            const response = await fetch(`${baseUrl}/devices`);
             const data = await response.json();
             setDevices(data);
         } catch (error) {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
+import { baseUrl } from '../../utils/baseUrl';
 
 Chart.register(...registerables);
 
@@ -34,7 +35,7 @@ const DeviceActivityChart = () => {
     }, []);
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/device-activity')
+        fetch(`${baseUrl}/api/device-activity`)
             .then((res) => res.json())
             .then((data: DeviceActivityEntry[]) => {
                 console.log('🚀 Device Activity API Response:', data);

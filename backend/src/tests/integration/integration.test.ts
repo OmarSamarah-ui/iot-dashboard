@@ -1,46 +1,27 @@
 import request from 'supertest';
 import app from '../../app';
-import { poolPromise, sql } from '../../db';
+import { pool } from '../../db';
 
-describe('Integration Tests for API', () => {
+describe('Integration Tests for API with Supabase PostgreSQL', () => {
     let testDeviceId: number;
 
     beforeAll(async () => {
-        const pool = await poolPromise;
-        if (!pool) throw new Error('Database connection failed');
+        const client = await pool.connect();
+        try {
+            // Clear test data before running tests
+            await client.query('DELETE FROM devices WHERE name = $1', ['Test Sensor']);
 
-        // Insert a test device
-        const result = await pool
-            .request()
-            .input('name', sql.NVarChar, 'Test Sensor')
-            .input('type', sql.NVarChar, 'Temperature Sensor')
-            .input('location', sql.NVarChar, 'Lab')
-            .input('status', sql.NVarChar, 'Active')
-            .query('INSERT INTO devices (name, type, location, status) OUTPUT INSERTED.id VALUES (@name, @type, @location, @status)');
+            // Insert a test device
+            const result = await client.query(
+                `INSERT INTO devices (name, type, location, status) 
+             VALUES ($1, $2, $3, $4) RETURNING id`,
+                ['Test Sensor', 'Temperature Sensor', 'Lab', 'Active']
+            );
 
-        testDeviceId = result.recordset[0].id;
-        console.log(`✅ Test Device Created with ID: ${testDeviceId}`);
-
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        let attempts = 5;
-        let deviceExists = false;
-        while (attempts > 0) {
-            const checkResult = await pool.request().input('id', sql.Int, testDeviceId).query('SELECT * FROM devices WHERE id = @id');
-
-            if (checkResult.recordset.length > 0) {
-                deviceExists = true;
-                console.log(`✅ Device with ID ${testDeviceId} is confirmed in the database.`);
-                break;
-            } else {
-                console.warn(`⏳ Waiting for device ${testDeviceId} to commit... (${5 - attempts + 1}/5)`);
-                await new Promise((resolve) => setTimeout(resolve, 500));
-            }
-            attempts--;
-        }
-
-        if (!deviceExists) {
-            throw new Error(`❌ Device with ID ${testDeviceId} was NOT found in the database!`);
+            testDeviceId = result.rows[0].id;
+            console.log(`✅ Test Device Created with ID: ${testDeviceId}`);
+        } finally {
+            client.release();
         }
     });
 
@@ -95,9 +76,11 @@ describe('Integration Tests for API', () => {
     });
 
     afterAll(async () => {
-        const pool = await poolPromise;
-        if (pool) {
-            await pool.request().input('id', sql.Int, testDeviceId).query(`DELETE FROM devices WHERE id = @id`);
+        const client = await pool.connect();
+        try {
+            await client.query('DELETE FROM devices WHERE id = $1', [testDeviceId]);
+        } finally {
+            client.release();
         }
     });
 });

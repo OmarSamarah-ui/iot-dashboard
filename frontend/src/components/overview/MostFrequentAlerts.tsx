@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import { ResponsiveContainer } from 'recharts';
+import { baseUrl } from '../../utils/baseUrl';
 
 const MostFrequentAlerts = () => {
     const [chartData, setChartData] = useState<{
@@ -30,7 +31,7 @@ const MostFrequentAlerts = () => {
     }, []);
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/most-frequent-alerts')
+        fetch(`${baseUrl}/api/most-frequent-alerts`)
             .then((res) => res.json())
             .then((data) => {
                 console.log('🚀 API Response:', data);

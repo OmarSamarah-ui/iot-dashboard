@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Pie } from 'react-chartjs-2';
+import { baseUrl } from '../../utils/baseUrl';
 
 interface ChartData {
     labels: string[];
@@ -28,7 +29,7 @@ const AlertsChart = () => {
     }, []);
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/sensor-alerts')
+        fetch(`${baseUrl}/api/sensor-alerts`)
             .then((res) => res.json())
             .then((data: Record<string, number>) => {
                 if (data && Object.keys(data).length > 0) {
