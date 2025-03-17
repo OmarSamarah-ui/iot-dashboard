@@ -28,16 +28,26 @@ const Analytics = () => {
     }
 
     useEffect(() => {
-        fetch(`${baseUrl}/devices`)
-            .then((res) => res.json())
-            .then((data: Device[]) => {
+        const fetchDevices = async () => {
+            try {
+                const response = await fetch(`${baseUrl}/devices`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data: Device[] = await response.json();
                 setDevices(data);
 
                 if (data.length > 0) {
                     const validDeviceId = urlDeviceId && data.some((device: Device) => device.id === parseInt(urlDeviceId));
                     setSelectedDeviceId(validDeviceId ? parseInt(urlDeviceId) : data[0].id);
                 }
-            });
+            } catch (error) {
+                console.error('❌ Error fetching devices:', error);
+            }
+        };
+
+        fetchDevices();
     }, [urlDeviceId]);
 
     useEffect(() => {
@@ -54,7 +64,7 @@ const Analytics = () => {
         if (endDate) params.append('end', endDate);
 
         try {
-            const response = await fetch(`http://localhost:5000/devices/${deviceId}/data?${params.toString()}`);
+            const response = await fetch(`${baseUrl}/devices/${deviceId}/data?${params.toString()}`);
             const data = await response.json();
             setChartData(data);
         } catch (error) {
@@ -71,7 +81,7 @@ const Analytics = () => {
         const formattedTimestamp = new Date(timestamp).toISOString().replace('T', ' ').replace('Z', '');
 
         try {
-            const response = await fetch(`http://localhost:5000/devices/${selectedDeviceId}/data`, {
+            const response = await fetch(`${baseUrl}/devices/${selectedDeviceId}/data`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ timestamp: formattedTimestamp, value }),

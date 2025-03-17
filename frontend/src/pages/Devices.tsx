@@ -97,6 +97,7 @@ const Devices = () => {
                         .filter((device) => device.status === 'Active')
                         .map((device) => (
                             <DeviceCard
+                                key={device.id} // Added key prop
                                 device={device}
                                 onDelete={() => {
                                     setDeviceToDelete(device.id);

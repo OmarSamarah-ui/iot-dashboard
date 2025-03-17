@@ -1,1 +1,1 @@
-export const baseUrl = 'http://localhost:5000';
+export const baseUrl = 'https://dashboard-iot-docker-31994fb378fb.herokuapp.com';
