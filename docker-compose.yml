@@ -7,16 +7,12 @@ services:
             dockerfile: Dockerfile
         ports:
             - '5000:5000'
-        environment:
-            - NODE_ENV=development
-            - DB_SERVER=postgresql://postgres:SupaBasePass01!@db.pbdodcjhafdkivnkctal.supabase.co:5432/postgres
-            - DB_USER=postgres
-            - DB_PASSWORD=SupaBasePass01!
-            - DB_NAME=postgres
-            - DB_PORT=5432
+        env_file:
+            - .env # ✅ Load all environment variables from .env
         networks:
             - dashboardiot_network
-        command: ['/bin/sh', '-c', 'cd backend && npm run dev']
+        working_dir: /app/backend # ✅ Set correct working directory
+        command: ['npm', 'run', 'dev'] # ✅ Properly run the backend
 
     frontend:
         build:
@@ -28,7 +24,8 @@ services:
             - backend
         networks:
             - dashboardiot_network
-        command: ['/bin/sh', '-c', 'cd frontend && npm run dev']
+        working_dir: /app/frontend # ✅ Set correct working directory
+        command: ['npm', 'run', 'dev'] # ✅ Properly run the frontend
 
 networks:
     dashboardiot_network:
