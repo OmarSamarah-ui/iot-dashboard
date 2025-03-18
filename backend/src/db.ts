@@ -1,20 +1,31 @@
-import { Pool } from 'pg';
 import dotenv from 'dotenv';
+import path from 'path';
+import { Pool } from 'pg';
 
-dotenv.config();
+// Load .env file explicitly
+const envFile = process.env.NODE_ENV === 'test' ? '../.env.test' : '../../.env';
+dotenv.config({ path: path.resolve(__dirname, envFile) });
 
-const isTestEnv = process.env.NODE_ENV === 'test';
+// Verify DB_SERVER is being loaded
+console.log(`🔍 NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`🔍 Using DB_SERVER: ${process.env.DB_SERVER}`);
 
-const TEST_DB_SERVER = 'postgresql://postgres.xnvjnaoidsgjcnsadnvj:SupaBaseTestPass01!@aws-0-eu-central-1.pooler.supabase.com:5432/postgres';
-const DB_SERVER = 'postgresql://postgres.pbdodcjhafdkivnkctal:SupaBasePass01!@aws-0-eu-central-1.pooler.supabase.com:5432/postgres';
+if (!process.env.DB_SERVER) {
+    console.error('❌ ERROR: DB_SERVER is not defined! Check your .env or .env.test file.');
+    process.exit(1);
+}
 
 const pool = new Pool({
-    connectionString: isTestEnv ? TEST_DB_SERVER : DB_SERVER,
-    ssl: { rejectUnauthorized: false },
+    connectionString: process.env.DB_SERVER,
+    ssl: { rejectUnauthorized: false }, // Supabase requires SSL
 });
+
 // Test Connection
 pool.connect()
-    .then(() => console.log('✅ Connected to Supabase PostgreSQL'))
-    .catch((err) => console.error('❌ Database connection failed:', err));
+    .then(() => console.log(`✅ Connected to Supabase ${process.env.NODE_ENV === 'test' ? 'Test' : 'Production'} Database`))
+    .catch((err) => {
+        console.error('❌ Database connection failed:', err);
+        process.exit(1);
+    });
 
 export { pool };
