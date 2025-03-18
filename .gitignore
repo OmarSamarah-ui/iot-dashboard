@@ -7,10 +7,6 @@ dist/
 backend/dist/
 frontend/dist/
 
-# Ignore environment files
-.env
-backend/.env
-frontend/.env
 
 # Ignore log files
 *.log
