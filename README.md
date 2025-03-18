@@ -40,6 +40,19 @@ This IoT Dashboard is a full-stack web application designed to manage and monito
 
 💡 **Note:** The database is hosted on **Supabase**, so no additional database setup is needed.
 
+### Testing
+
+1. Go to the root project
+    ```sh
+   cd backend
+   ```
+2. Run the following command:
+   ```sh
+   npm test
+   ```
+4. The tests will start and you will see the response in the terminal
+
+
 ---
 
 ## 📌 Usage
